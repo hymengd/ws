@@ -1,50 +1,75 @@
-<script setup lang="ts">
+<script lang="ts">
 import { defineComponent } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Setting, SwitchButton } from '@element-plus/icons-vue'
 import { setUserOffline } from '@/api/user'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores'
-const router = useRouter()
-const userStore = useUserStore()
+import { usePermissionStore, useUserStore } from '@/stores'
 
-// 退出登录方法
-const handleLogout = () => {
-  setUserOffline(userStore.currentUserId)
-  userStore.clearUserInfo()
-  // 强制刷新页面以重置所有状态
-  router.replace('/login').finally(() => {
-    window.location.reload()
-  })
-}
+export default defineComponent({
+  name: 'YiSiHeader',
+  props: {
+        height: {
+            type: String,
+            default: '60px'
+        },
+        isFold: {
+            type: Boolean,
+            default: false
+        }
+    },
+  setup() {
+    const router = useRouter()
+    const userStore = useUserStore()
+    const routerStore = usePermissionStore()
+    const handleLogout = () => {
+      setUserOffline(userStore.currentUserId)
+      userStore.clearUserInfo()
+      routerStore.cleanUseRouter()
+      router.replace('/login').finally(() => {
+        window.location.reload()
+      })
+    }
 
-// 设置方法
-const handleSettings = () => {
-  ElMessage.info('设置功能待实现')
-}
+    const handleSettings = () => {
+      ElMessage.info('设置功能待实现')
+    }
 
-// 导出组件
-defineComponent({
-  name: 'wsHeader'
+    return {
+      handleLogout,
+      handleSettings,
+      Setting,
+      SwitchButton
+    }
+  }
 })
 </script>
+
+// ... 保持template和style部分不变 ...
 
 <template>
   <header class="header-container">
     <div class="header-content">
       <div class="logo">
+        <el-button 
+          @click="$emit('toggle-asider')" 
+          :icon="isFold ? 'Expand' : 'Fold'"
+          circle
+          plain
+          size="small"
+        />
         <h1>即时通讯系统</h1>
       </div>
       <div class="header-actions">
         <el-button
-          type="text"
+          link
           :icon="Setting"
           @click="handleSettings"
         >
           设置
         </el-button>
         <el-button
-          type="text"
+          link
           :icon="SwitchButton"
           @click="handleLogout"
         >
@@ -57,8 +82,7 @@ defineComponent({
 
 <style lang="scss" scoped>
 .header-container {
-  height: 60px;
-  
+  height: v-bind('height');
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   // position: fixed;

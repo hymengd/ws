@@ -2,10 +2,11 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { useUserStore } from '../stores/index'
+import { usePermissionStore, useUserStore } from '../stores/index'
 import { login, setUserOnline } from '@/api/user'
 const router = useRouter()
 const userStore = useUserStore()
+const permissionStore = usePermissionStore()
 const loginForm = ref({
   account: 'qm2025001',
   password: '1qaz'
@@ -20,10 +21,11 @@ const handleLogin = async () => {
   try {
     const { data } = await login(loginForm.value.account, loginForm.value.password)
     ElMessage.success('登录成功')
-    await userStore.userlogin(data)
     // 设置用户为上线状态
     setUserOnline(userStore.currentUserId)
-    router.replace('/chat') // 路由跳转保持在组件层
+    await userStore.userlogin(data) // 登录成功后，设置用户信息
+    await permissionStore.initUseRouter() // 初始化路由
+    router.replace('/home') // 前面设置了登录信息，路由守卫判断
   } catch (e) {
     ElMessage.error('登录失败，请检查账号密码')
   }

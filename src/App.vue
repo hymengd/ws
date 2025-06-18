@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import wsHeader from '@/layouts/header/index.vue'
 </script>
 
 <template>
-  <div>
     <!-- <h1>欢迎使用 Vite + Vue 3!</h1> -->
-    <wsHeader />
     <el-main>
       <router-view></router-view>
-
     </el-main>
-  </div>
 </template>
 
 <style scoped>

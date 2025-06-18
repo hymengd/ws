@@ -44,10 +44,10 @@ async function initFriend() {
     if(friends.value.length > 0) {
       targetUserId.value = friends.value[0].id // 设置第一个好友为默认选中的好友
     }
-    console.log(response.data);
+    // console.log(response.data);
     
     onlineFriends = response.data.filter((friend: FriendInfo) => friend.status == '在线'  )
-    console.log(onlineFriends.value);
+    // console.log(onlineFriends.value);
     
   } catch (error) {
     console.error('获取好友列表失败:', error)
@@ -68,7 +68,7 @@ onMounted(async() => {
   await nextTick()
   // 初始化好友列表
   await initFriend();
-  console.log(status);
+  // console.log(status);
   
   // setInterval(()=>{
   //   console.log("循环");

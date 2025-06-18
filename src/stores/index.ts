@@ -7,6 +7,6 @@ pinia.use(piniaPluginPersistedstate);
 
 // 统一导出所有模块
 export * from './modules/user';
-
+export * from './modules/permission';
 // 导出初始化后的 Pinia 实例
 export default pinia;
